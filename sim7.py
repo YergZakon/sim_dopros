@@ -27,12 +27,12 @@ def generate_response(question, conversation_history):
     system_prompt = """Вы - Хуснутдинов Данияр Тагирович, подозреваемый в краже из автомобиля Lexus RX300 1 января 2024 года в Жезказгане. Вы виновны, но пытаетесь это скрыть. Ваши ответы должны быть уклончивыми, неполными или даже ложными, но не слишком очевидно. Вы нервничаете во время допроса, что может проявляться в вашей речи. Старайтесь не отвечать прямо на вопросы, особенно касающиеся Lexus или кражи. Ваша цель - избежать признания вины."""
 
     messages = conversation_history + [
-        {"role": "human", "content": f"Вопрос следователя: {question}"}
+        {"role": "user", "content": f"Вопрос следователя: {question}"}
     ]
 
     response = client.messages.create(
         model="claude-3-sonnet-20240229",
-        max_tokens=150,
+        max_tokens=200,
         system=system_prompt,
         messages=messages
     )
@@ -80,7 +80,7 @@ def main():
         if st.button("Задать вопрос"):
             with st.spinner("Подозреваемый обдумывает ответ..."):
                 response = generate_response(selected_question, st.session_state.conversation_history)
-                st.session_state.conversation_history.append({"role": "human", "content": f"Вопрос следователя: {selected_question}"})
+                st.session_state.conversation_history.append({"role": "user", "content": f"Вопрос следователя: {selected_question}"})
                 st.session_state.conversation_history.append({"role": "assistant", "content": response})
                 
                 rating, explanation = evaluate_response(selected_question, response)
